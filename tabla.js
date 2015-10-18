@@ -3,6 +3,7 @@
 var tabla_valores;
 var actualizar_datos; // flag para indicar si hay datos modificados o no
 var timer_actualizar_datos; // temporizador utilizado para realizar el parpadeo en el caso que actualizar_datos sea true
+var Tem1;
 
 var timer_interval_modo;
 window.onload = function() {
@@ -11,25 +12,27 @@ window.onload = function() {
 	actualizar_datos = false;
 	timer_interval_modo=null;
 	
-	crearTermostatoTipo0( 0);
+	Tem1= new TermostatoSistena(0);
+	Tem1.set("Visible",true);
+	//crearTermostatoTipo0( 0);
 		
-	crearTermostatoTipo0( 1);
-	crearTermostatoTipo0( 2);
-	crearTermostatoTipo0( 3);
-	crearTermostatoTipo0( 4);
-	crearTermostatoTipo0( 5);
-	crearTermostatoTipo0( 6);
-	crearTermostatoTipo0( 7);
+	//crearTermostatoTipo0( 1);
+	//crearTermostatoTipo0( 2);
+	//crearTermostatoTipo0( 3);
+	//crearTermostatoTipo0( 4);
+	//crearTermostatoTipo0( 5);
+	//crearTermostatoTipo0( 6);
+	//crearTermostatoTipo0( 7);
 	
 	debugger;
-	visibleTermostato(1,0);
-	visibleTermostato(1,1);
-	visibleTermostato(0,2);
-	visibleTermostato(1,3);
-	visibleTermostato(1,4);
-	visibleTermostato(1,5);
-	visibleTermostato(1,6);
-	visibleTermostato(1,7);
+	//visibleTermostato(1,0);
+	//visibleTermostato(1,1);
+	//visibleTermostato(0,2);
+	//visibleTermostato(1,3);
+	//visibleTermostato(1,4);
+	//visibleTermostato(1,5);
+	//visibleTermostato(1,6);
+	//visibleTermostato(1,7);
 	
 
 }
@@ -40,7 +43,7 @@ function crearTermostatoTipo0( id_term)
 {
 	debugger;
 	var termostato1= new Object();
-	var Tem1= new TermostatoSistena(id_term);
+	
 	
 	termostato1.parametros={temperatura:35.5, modo:0,temperaturaAmbiente:30.5,ValvulaAbierta:0};// datos recibidor del termostato
 	termostato1.configuracion={temperatura:35.5, modo:0, Caption:""};// parametros que se envian al termostato 
