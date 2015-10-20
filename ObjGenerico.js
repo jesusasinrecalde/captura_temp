@@ -1,15 +1,25 @@
-function ObjectoGenerico(idTerm,Tipo,Caption,Nombre)
+/** Constructor ObjetoGenerico
+	*@param idTerm Identificativo Objeto 
+	*@param Tipo identificativo de tipo de objeto , dato que no tiene impacto en la operacion
+	*@param Caption texto que aparece en caption del objeto
+	*@param Nombre Id de la plantilla html que tiene que crear 
+*/
+function ObjectoGenerico(idTerm,Tipo,Caption,Nombre,SUP_ColorFondoActivo,SUP_ColorActivo,SUP_ColorFondoInactivo,SUP_ColorInactivo)
 {
 	"use strict";
 	this.Id=idTerm;
 	this.Tipo=Tipo;
 	this.iluminadoModo=false; // switch necesario para poder realizar el parpadeo de cambio 
-	this.Tipo=0;// valor identificativo de tipo 
+	//this.Tipo=0;// valor identificativo de tipo 
 	this.visible=true; // si el objeto ( graficamente ) esta visible o no
 	this.Minimizado=true; // si el objeto ( graficamente ) esta minimizado o no
 	this.Caption=Caption;
 	this.Nombre=Nombre;
 	this.Estado="APAGADO"; 
+	this.SUP_ColorFondoActivo=SUP_ColorFondoActivo;
+	this.SUP_ColorActivo=SUP_ColorActivo;
+	this.SUP_ColorFondoInactivo=SUP_ColorFondoInactivo;
+	this.SUP_ColorInactivo=SUP_ColorInactivo;
 };
 
 ObjectoGenerico.prototype.get=function(atributo)
@@ -78,11 +88,14 @@ ObjectoGenerico.prototype.set=function(atributo,valor)
 	
 };
 
-
-ObjectoGenerico.prototype.ClonaGenerico=function(objeto)
+/** Clona una plantilla dada por parametro y modifica los elementos comunes 
+	*@param NombrePlantilla Nombre de plantilla a clonar
+	*@return Objeto clonado
+*/
+ObjectoGenerico.prototype.ClonaGenerico=function(NombrePlantilla)
 {
 	debugger;
-	var t = document.querySelector(objeto);
+	var t = document.querySelector(NombrePlantilla);
 	var elemento = document.importNode(t.content, true);
 	elemento.getElementById("obj_tipo2").id=this.Nombre+this.Id;
 	elemento.getElementById("marco_superior").id="marco_superior"+this.Id;
@@ -98,5 +111,72 @@ ObjectoGenerico.prototype.ClonaGenerico_2=function()
 	document.getElementById("icono_despliegue"+this.Id).setAttribute( "IdTerm",this.Id.toString());
 	document.getElementById("icono_OnOffSup"+this.Id).setAttribute("IdTerm",this.Id.toString());
 	
-	$('#icono_despliegue'+idTerm).click(this.depliegue);
+	$('#icono_despliegue'+this.Id).click(this.depliegue);
 }	
+
+ObjectoGenerico.prototype.Desplegar=function()
+{
+	debugger;
+	
+	
+	this.ParpadeoGrafico('#icono_despliegue'+this.Id);
+	var icono = document.getElementById('icono_despliegue'+this.Id);
+	if(this.Minimizado)
+	{
+		icono.src="./graph/arrow_up.png";
+		$('#icono_OnOffSup'+this.Id).fadeOut(400);// si se pasa de minizado a maximizado el boton de apagado del caption desaparece
+		
+		//if(origen==0)
+		//	$('#marco_inf'+id_term).toggle("fade");
+	}
+	else
+	{
+		icono.src="./graph/arrow_down.png";
+		$('#icono_OnOffSup'+this.Id).fadeIn(300);
+		//$('#icono_OnOffSup'+this.Id).fadeOut(400);
+	}
+	this.Minimizado= !this.Minimizado;
+}
+
+ObjectoGenerico.prototype.ParpadeoGrafico=function(ObjName)
+{
+	$(ObjName).fadeOut(100);
+	$(ObjName).fadeIn(100);
+}
+
+ObjectoGenerico.prototype.CambioOnOff=function()
+{
+	if(this.Estado=="ENCENDIDO")
+		this.Estado="APAGADO";
+	else
+		this.Estado="ENCENDIDO";
+	
+}
+
+
+/** Cambia la visualizacion del objeto en funcion de los datos que lo configuran
+*/
+ObjectoGenerico.prototype.Actualizar=function()
+{
+	
+	debugger;
+	var MarcoSup = document.getElementById('marco_superior'+this.Id);
+	var iconoOnOff = document.getElementById('icono_OnOffSup'+this.Id);
+	
+	switch ( this.Estado)
+	{
+		case "ENCENDIDO" :
+			MarcoSup.style.backgroundColor=this.SUP_ColorFondoActivo;
+			MarcoSup.style.color=this.SUP_ColorActivo;
+			iconoOnOff.src="./graph/on.png";	
+			
+			break;
+		
+		case "APAGADO" :
+			MarcoSup.style.backgroundColor=this.SUP_ColorFondoInactivo;
+			MarcoSup.style.color=this.SUP_ColorInactivo;
+			iconoOnOff.src="./graph/off.png";
+			break;
+	}
+	
+}

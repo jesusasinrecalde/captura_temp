@@ -508,3 +508,38 @@ function func_inteval_modo()
 function graph()
 {
 }
+
+
+// ---------------------------------------------------------------------------------------------
+function EvntBtwDespliegue(obj)
+{
+
+
+	debugger;
+	
+	Tem1.Desplegar();
+	//var id_term=parseInt(obj.getAttribute('IdTerm')); // asi se obtiene el Id 
+	//var data = tabla_valores[id_term];
+	//$('#icono_desplegar'+id_term).fadeOut(100);
+	//$('#icono_desplegar'+id_term).fadeIn(100);
+
+
+//	if(data.EstaMinimizado==1)// si esta minimizado ...
+//	{
+//		data.EstaMinimizado=0;// ... se maximiza
+//		
+//	}
+//	else
+//	{
+//		data.EstaMinimizado=1;
+//		
+//	}
+//	Desplegar(id_term,0);
+			
+
+}
+
+function EvntBtnOn_off(obj)
+{
+	Tem1.CambioOnOff();	
+}
