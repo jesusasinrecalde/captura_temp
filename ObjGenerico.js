@@ -3,6 +3,7 @@
 	*@param Tipo identificativo de tipo de objeto , dato que no tiene impacto en la operacion
 	*@param Caption texto que aparece en caption del objeto
 	*@param Nombre Id de la plantilla html que tiene que crear 
+	
 */
 function ObjectoGenerico(idTerm,Tipo,Caption,Nombre,SUP_ColorFondoActivo,SUP_ColorActivo,SUP_ColorFondoInactivo,SUP_ColorInactivo)
 {
@@ -103,6 +104,13 @@ ObjectoGenerico.prototype.ClonaGenerico=function(NombrePlantilla)
 	elemento.getElementById("caption").id="caption_temp"+this.Id;
 	elemento.getElementById("icono_OnOffSup").id="icono_OnOffSup"+this.Id;
 	
+	// ============ ELEMENTOS MARCO INFERIOR =====================================
+	elemento.getElementById("marco_inf").id="marco_inf"+this.Id;
+	elemento.getElementById("btn_onoff").id="btn_onoff"+this.Id;
+	elemento.getElementById("icono_OnOffInf").id="icono_OnOffInf"+this.Id;
+	
+	
+	
 	return elemento;
 }	
 	
@@ -110,7 +118,8 @@ ObjectoGenerico.prototype.ClonaGenerico_2=function()
 {
 	document.getElementById("icono_despliegue"+this.Id).setAttribute( "IdTerm",this.Id.toString());
 	document.getElementById("icono_OnOffSup"+this.Id).setAttribute("IdTerm",this.Id.toString());
-	
+	document.getElementById("btn_onoff"+this.Id).setAttribute("IdTerm",this.Id.toString());
+	document.getElementById("icono_OnOffInf"+this.Id).setAttribute("IdTerm",this.Id.toString());
 	$('#icono_despliegue'+this.Id).click(this.depliegue);
 }	
 
@@ -126,17 +135,20 @@ ObjectoGenerico.prototype.Desplegar=function()
 		icono.src="./graph/arrow_up.png";
 		$('#icono_OnOffSup'+this.Id).fadeOut(400);// si se pasa de minizado a maximizado el boton de apagado del caption desaparece
 		
-		//if(origen==0)
-		//	$('#marco_inf'+id_term).toggle("fade");
+		
 	}
 	else
 	{
 		icono.src="./graph/arrow_down.png";
 		$('#icono_OnOffSup'+this.Id).fadeIn(300);
 		//$('#icono_OnOffSup'+this.Id).fadeOut(400);
+		
 	}
+	$('#marco_inf'+this.Id).toggle("fade");
 	this.Minimizado= !this.Minimizado;
 }
+
+
 
 ObjectoGenerico.prototype.ParpadeoGrafico=function(ObjName)
 {
@@ -162,20 +174,34 @@ ObjectoGenerico.prototype.Actualizar=function()
 	debugger;
 	var MarcoSup = document.getElementById('marco_superior'+this.Id);
 	var iconoOnOff = document.getElementById('icono_OnOffSup'+this.Id);
+	var iconoOnOffInf = document.getElementById('icono_OnOffInf'+this.Id);
+	
+	var MarcoInf = document.getElementById('marco_inf'+this.Id);
 	
 	switch ( this.Estado)
 	{
 		case "ENCENDIDO" :
+			// ======= ELEMENTOS MARCO SUPERIOR =====================
 			MarcoSup.style.backgroundColor=this.SUP_ColorFondoActivo;
 			MarcoSup.style.color=this.SUP_ColorActivo;
-			iconoOnOff.src="./graph/on.png";	
+			iconoOnOff.src="./graph/on.png";
+			
+			// ======= ELEMENTOS MARCO INFERIOR
+			iconoOnOffInf.src="./graph/on.png";
+			MarcoInf.style.color="#555BA8";
+			MarcoInf.style.backgroundColor="#A9A8E8"
 			
 			break;
 		
 		case "APAGADO" :
+			// ======== ELEMENTOS MARCO SUPERIOR =========================
 			MarcoSup.style.backgroundColor=this.SUP_ColorFondoInactivo;
 			MarcoSup.style.color=this.SUP_ColorInactivo;
 			iconoOnOff.src="./graph/off.png";
+			
+			// ======== ELEMENTOS MARCO INFERIOR ========================
+			iconoOnOffInf.src="./graph/off.png";
+			MarcoInf.style.backgroundColor="#E6E9FF";
 			break;
 	}
 	
