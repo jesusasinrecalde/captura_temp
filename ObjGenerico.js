@@ -98,6 +98,7 @@ ObjectoGenerico.prototype.ClonaGenerico=function(NombrePlantilla)
 	debugger;
 	var t = document.querySelector(NombrePlantilla);
 	var elemento = document.importNode(t.content, true);
+	// ============= ELEMENTOS MARCO SUPERIOR ==================================
 	elemento.getElementById("obj_tipo2").id=this.Nombre+this.Id;
 	elemento.getElementById("marco_superior").id="marco_superior"+this.Id;
 	elemento.getElementById("icono_despliegue").id="icono_despliegue"+this.Id;
