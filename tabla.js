@@ -543,3 +543,41 @@ function EvntBtnOn_off(obj)
 {
 	Tem1.CambioOnOff();	
 }
+function EvnSubirTemp(obj)
+{
+	Tem1.SubirTemp();
+}
+
+function EvnBajarTemp(obj)
+{
+	Tem1.BajarTemp();
+}
+
+function ActivarTemporizadorCambio()
+{
+	
+	if(timer_interval_modo==null)	
+	{
+		// se crea el temporizador parar destacar el cambio de modo
+		timer_interval_modo=setInterval(func_inteval_modo,1000);
+	}
+}
+
+function DesactivaTemporizadorCambio()
+{
+	clearInterval(timer_interval_modo);
+	timer_interval_modo=null;
+	
+	Tem1.DesactivaTemporizadorCambio();
+}
+
+function func_inteval_modo()
+{
+	debugger;
+		if(Tem1.HayDatosCambiados())
+		{
+			Tem1.AccionCambioDatos();
+		}
+		else
+			DesactivaTemporizadorCambio();
+}

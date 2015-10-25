@@ -102,7 +102,7 @@ ObjectoGenerico.prototype.ClonaGenerico=function(NombrePlantilla)
 	elemento.getElementById("obj_tipo2").id=this.Nombre+this.Id;
 	elemento.getElementById("marco_superior").id="marco_superior"+this.Id;
 	elemento.getElementById("icono_despliegue").id="icono_despliegue"+this.Id;
-	elemento.getElementById("caption").id="caption_temp"+this.Id;
+	elemento.getElementById("caption").id="caption"+this.Id;
 	elemento.getElementById("icono_OnOffSup").id="icono_OnOffSup"+this.Id;
 	
 	// ============ ELEMENTOS MARCO INFERIOR =====================================
@@ -207,3 +207,31 @@ ObjectoGenerico.prototype.Actualizar=function()
 	}
 	
 }
+
+/** Funcion de accion grafica en el caso de cambio de datos  del objeto, para el objeto generico solo caption 
+	
+*/
+ObjectoGenerico.prototype.AccionCambioDatos=function()
+{
+	if(this.iluminadoModo)
+	{
+		
+		$( '#caption'+this.Id ).fadeTo( 'slow',.3 );
+	}
+	else
+	{
+		
+		$( '#caption'+this.Id ).fadeTo( 'slow',1 );
+	}
+	this.iluminadoModo= !this.iluminadoModo;
+}
+
+/** Acciones a realizar cuando no se necesita visualmente indicar un cambio de datos , se vuelve al valor original
+*/
+ObjectoGenerico.prototype.DesactivaTemporizadorCambio=function()
+{
+	if(!this.iluminadoModo)
+			$( '#caption'+this.Id ).fadeTo( 'slow',1 );
+	
+	this.iluminaModo=false;
+}	
