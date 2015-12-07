@@ -1,6 +1,5 @@
 {
   "name": "hejmo-movil",
-  "version": "1.0",
   "description": "Ejemplo movil hejmo",
   "main": "index.js",
   "scripts": {
