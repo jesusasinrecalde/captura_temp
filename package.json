@@ -10,7 +10,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jesusasinrecalde/captura_temp"
-  }
-  
+    "url": "git+https://github.com/jesusasinrecalde/captura_temp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jesusasinrecalde/captura_temp/issues"
+  },
+  "homepage": "https://github.com/jesusasinrecalde/captura_temp#readme",
+  "version": "1.0.0",
+  "author": "",
+  "license": "ISC"
 }
