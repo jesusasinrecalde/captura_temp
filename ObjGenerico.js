@@ -1,11 +1,16 @@
-/** Constructor ObjetoGenerico
+	/** Constructor ObjetoGenerico
 	*@param idTerm Identificativo Objeto 
 	*@param Tipo identificativo de tipo de objeto , dato que no tiene impacto en la operacion
 	*@param Caption texto que aparece en caption del objeto
-	*@param Nombre Id de la plantilla html que tiene que crear 
+	*@param Nombre Id de la plantilla html que tiene que crear
+	*@param flgBTNONOFF Flag para indicar si se visualiza el boton de encendio-apagaod
+	*@param SUP_ColorFondoActivo 
+	*@param SUP_ColorActivo
+	*@param SUP_ColorFondoInactivo
+	*@param SUP_ColorInactivo
 	
 */
-function ObjectoGenerico(idTerm,Tipo,Caption,Nombre,SUP_ColorFondoActivo,SUP_ColorActivo,SUP_ColorFondoInactivo,SUP_ColorInactivo)
+function ObjectoGenerico(idTerm,Tipo,Caption,Nombre,bflgVerBTNONOFF,SUP_ColorFondoActivo,SUP_ColorActivo,SUP_ColorFondoInactivo,SUP_ColorInactivo)
 {
 	"use strict";
 	this.Id=idTerm;
@@ -14,6 +19,7 @@ function ObjectoGenerico(idTerm,Tipo,Caption,Nombre,SUP_ColorFondoActivo,SUP_Col
 	//this.Tipo=0;// valor identificativo de tipo 
 	this.visible=true; // si el objeto ( graficamente ) esta visible o no
 	this.Minimizado=true; // si el objeto ( graficamente ) esta minimizado o no
+	this.flgVerBTNONOFF=bflgVerBTNONOFF;
 	this.Caption=Caption;
 	this.Nombre=Nombre;
 	this.Estado="APAGADO"; 
@@ -121,6 +127,9 @@ ObjectoGenerico.prototype.ClonaGenerico_2=function()
 	document.getElementById("icono_OnOffSup"+this.Id).setAttribute("IdTerm",this.Id.toString());
 	document.getElementById("btn_onoff"+this.Id).setAttribute("IdTerm",this.Id.toString());
 	document.getElementById("icono_OnOffInf"+this.Id).setAttribute("IdTerm",this.Id.toString());
+	var elem1=document.getElementById("caption"+this.Id);
+    elem1.innerHTML=this.Caption;
+	
 	$('#icono_despliegue'+this.Id).click(this.depliegue);
 }	
 
@@ -134,16 +143,19 @@ ObjectoGenerico.prototype.Desplegar=function()
 	if(this.Minimizado)
 	{
 		icono.src="./graph/arrow_up.png";
-		$('#icono_OnOffSup'+this.Id).fadeOut(400);// si se pasa de minizado a maximizado el boton de apagado del caption desaparece
-		
+		if(this.flgVerBTNONOFF)
+		{
+			$('#icono_OnOffSup'+this.Id).fadeOut(400);// si se pasa de minizado a maximizado el boton de apagado del caption desaparece
+		}
 		
 	}
 	else
 	{
 		icono.src="./graph/arrow_down.png";
-		$('#icono_OnOffSup'+this.Id).fadeIn(300);
-		//$('#icono_OnOffSup'+this.Id).fadeOut(400);
-		
+		if(this.flgVerBTNONOFF)
+		{
+			$('#icono_OnOffSup'+this.Id).fadeIn(300);
+		}
 	}
 	$('#marco_inf'+this.Id).toggle("fade");
 	this.Minimizado= !this.Minimizado;
@@ -159,6 +171,7 @@ ObjectoGenerico.prototype.ParpadeoGrafico=function(ObjName)
 
 ObjectoGenerico.prototype.CambioOnOff=function()
 {
+
 	if(this.Estado=="ENCENDIDO")
 		this.Estado="APAGADO";
 	else
@@ -176,9 +189,15 @@ ObjectoGenerico.prototype.Actualizar=function()
 	var MarcoSup = document.getElementById('marco_superior'+this.Id);
 	var iconoOnOff = document.getElementById('icono_OnOffSup'+this.Id);
 	var iconoOnOffInf = document.getElementById('icono_OnOffInf'+this.Id);
-	
 	var MarcoInf = document.getElementById('marco_inf'+this.Id);
 	
+	// no motramos los botones de encendido apagado y tenemos desactivado el flag. 
+	if(!this.flgVerBTNONOFF)
+	{
+		$('#icono_OnOffSup'+this.Id).hide();
+		$('#icono_OnOffInf'+this.Id).hide();
+		$('#btn_onoff'+this.Id).hide();
+	}
 	switch ( this.Estado)
 	{
 		case "ENCENDIDO" :
@@ -208,6 +227,19 @@ ObjectoGenerico.prototype.Actualizar=function()
 	
 }
 
+/** Funcion generica que indica si hay datos modificado, sin sobrecargar siempre da false
+*/
+ObjectoGenerico.prototype.HayDatosCambiados=function()
+{
+	return false;
+}
+
+/** Funcion generica de procesamiento de datos recibidor, sin sobrecargar no incorpora ningun dato
+*/
+ObjectoGenerico.prototype.ProcesaDatos=function(Parametros)
+{
+	return;
+}
 /** Funcion de accion grafica en el caso de cambio de datos  del objeto, para el objeto generico solo caption 
 	
 */

@@ -4,7 +4,7 @@ function TermostatoSistena(idTerm)
 	
 
 	debugger;
-	ObjectoGenerico.call(this,idTerm,0,"Termostato"+idTerm,"Termostato","#838DFF","#C4DDF9","#555BA8","#669");
+	ObjectoGenerico.call(this,idTerm,0,"Termostato"+idTerm,"Termostato",true,"#838DFF","#C4DDF9","#555BA8","#669");
 	this.Id=idTerm;
 	this.parametros={temperatura:35.5, modo:0,temperaturaAmbiente:30.5,ValvulaAbierta:0}; // datos que se recibe del servicio pass
 	this.configuracion={temperatura:35.5, modo:0, Caption:""}; // datos que se envia al servicio pass , son los que se modifican graficamente
@@ -79,6 +79,20 @@ TermostatoSistena.prototype.HayDatosCambiados=function()
 	}
 	return bRetorno;
 };
+/** Funcion de procesamiento de datos recibido, 
+*/
+TermostatoSistena.prototype.ProcesaDatos=function(Parametros)
+{
+	debugger;
+	var temperatura=Parametros.data[this.Id+'_dat1'];
+	if(temperatura==null)
+		return;
+	var floatTemperatura = parseFloat(temperatura);
+	this.parametros.temperatura=floatTemperatura;
+	this.CambioTemperatura();
+	
+	return;
+}
 
 /** Pulsacion del boton despliegue/repliegue de la pestaña principal, cambio maximizado/minizado 
 */

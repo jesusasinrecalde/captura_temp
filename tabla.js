@@ -4,18 +4,24 @@ var tabla_valores;
 var actualizar_datos; // flag para indicar si hay datos modificados o no
 var timer_actualizar_datos; // temporizador utilizado para realizar el parpadeo en el caso que actualizar_datos sea true
 var Tem1;
-
+var tabla_objetos;
 var timer_interval_modo;
 window.onload = function() {
 
 	tabla_valores = new Array();
+	tabla_objetos = new Array();
 	actualizar_datos = false;
 	timer_interval_modo=null;
 	
-	Tem1= new TermostatoSistena(0);
-	Tem1.set("Visible",true);
+	//Tem1= new TermostatoSistena(0);
+	//Tem1.set("Visible",true);
+	
+	//tabla_objetos.push(Tem1);
+	
+	//Tem1=new DatosGenerico(1);
+	//tabla_objetos.push(Tem1);
 	//crearTermostatoTipo0( 0);
-		
+	llamarServicioCarriots(); 	
 	//crearTermostatoTipo0( 1);
 	//crearTermostatoTipo0( 2);
 	//crearTermostatoTipo0( 3);
@@ -511,13 +517,32 @@ function graph()
 
 
 // ---------------------------------------------------------------------------------------------
+
+/** Funcion que da el objeto que corresponde al identificativo que se le pasa por parametro
+*@IdTerm Identificativo de objeto
+*@return objeto con ese identificativo, en caso de no encontralo da null
+*/
+function DarObjeto(IdTerm)
+{
+	var objeto=null
+	for (x=0;x<tabla_objetos.length;x++)
+	{
+		if(tabla_objetos[x].get("Id")== IdTerm)
+		{
+			objeto=tabla_objetos[x];
+			break;
+		}
+	}
+	return objeto;
+	
+}
 function EvntBtwDespliegue(obj)
 {
-
-
-	debugger;
-	
-	Tem1.Desplegar();
+	var id_term=parseInt(obj.getAttribute('IdTerm'));
+	var obj=DarObjeto(id_term);
+	if(obj)
+		obj.Desplegar();
+	//Tem1.Desplegar();
 	//var id_term=parseInt(obj.getAttribute('IdTerm')); // asi se obtiene el Id 
 	//var data = tabla_valores[id_term];
 	//$('#icono_desplegar'+id_term).fadeOut(100);
@@ -541,16 +566,27 @@ function EvntBtwDespliegue(obj)
 
 function EvntBtnOn_off(obj)
 {
-	Tem1.CambioOnOff();	
+	var id_term=parseInt(obj.getAttribute('IdTerm'));
+	var obj=DarObjeto(id_term);
+	if(obj)
+		obj.CambioOnOff();
 }
+
+
 function EvnSubirTemp(obj)
 {
-	Tem1.SubirTemp();
+	var id_term=parseInt(obj.getAttribute('IdTerm'));
+	var obj=DarObjeto(id_term);
+	if(obj)
+		obj.SubirTemp();
 }
 
 function EvnBajarTemp(obj)
 {
-	Tem1.BajarTemp();
+	var id_term=parseInt(obj.getAttribute('IdTerm'));
+	var obj=DarObjeto(id_term);
+	if(obj)
+		obj.BajarTemp();
 }
 
 function ActivarTemporizadorCambio()
@@ -567,17 +603,114 @@ function DesactivaTemporizadorCambio()
 {
 	clearInterval(timer_interval_modo);
 	timer_interval_modo=null;
+
+	for (x=0;x<tabla_objetos.length;x++)
+	{
+		tabla_objetos[x].DesactivaTemporizadorCambio();
 	
-	Tem1.DesactivaTemporizadorCambio();
+		
+	}
+	
+
 }
+
 
 function func_inteval_modo()
 {
 	debugger;
-		if(Tem1.HayDatosCambiados())
+	var objeto;
+	var contador=0;
+	for (x=0;x<tabla_objetos.length;x++)
+	{
+		objeto=tabla_objetos[x];
+	
+		if(objeto.HayDatosCambiados())
 		{
-			Tem1.AccionCambioDatos();
+			objeto.AccionCambioDatos();
+			contador++;
 		}
-		else
-			DesactivaTemporizadorCambio();
+		
+	}
+	
+	if(contador==0) // no hay cambio de datos en los objeto
+	{
+		// se desactiva el temporizador
+		DesactivaTemporizadorCambio();
+	}
+	
+	
+}
+
+
+function llamarServicioCarriots()
+{
+//	var carriotsURL = 'http://api.carriots.com/devices/defaultDevice@jesusasinrecalde.jesusasinrecalde/streams/?order=-1&max=1';
+	var carriotsURL = 'http://api.carriots.com/devices/prueba@jesusasinrecalde.jesusasinrecalde/streams/?order=-1&max=1';
+	
+	$.ajax({
+	beforeSend: function(xhrObj){
+        xhrObj.setRequestHeader("Content-Type","application/json");
+        xhrObj.setRequestHeader("Accept","application/json");
+        xhrObj.setRequestHeader("carriots.apikey","ee919e312f4a7310093bb7519293dede9cf4db4262accdb9284d91f234ae7713");
+	},
+    type : "GET",
+    url: carriotsURL,
+    success: recepcionServicioREST,
+    error : function(jqXHR, status) { alert(status +' fallo ');}
+});
+}
+
+function recepcionServicioREST (datosREST)
+{
+	
+	var totalDocuments = datosREST.total_documents;
+	var numdatos = datosREST.length;
+    var numdatos = datosREST.result.length;
+    debugger;
+	var nodo=datosREST.result[0];
+	var valor;
+	var Tem1;
+	var NumElementos=nodo.data['numElem'];
+	if(NumElementos==null)// Si no esta creado el campo numero de elementos no se continua con la creacion de objetos
+		return;
+	var iNumElementos=parseInt(NumElementos);
+	for(var indice=0;indice<iNumElementos;indice++)
+	{
+		valor = nodo.data['ID_'+indice];
+		if(valor!=null)
+		{
+			var TipoElemento=nodo.data['ID_'+indice];
+			switch(TipoElemento)
+			{
+				case "0" : // termostato sistema
+					Tem1= new TermostatoSistena(indice);
+					Tem1.set("Visible",true);
+					tabla_objetos.push(Tem1);
+					break;
+				case "1" : // datos genericos
+					Tem1=new DatosGenerico(indice);
+					tabla_objetos.push(Tem1);
+					break;
+				default :
+					break;
+			}
+			
+			
+		}
+		else// si no hay mas elementos se para la creacion del bucle independiente del valor de contador que figure
+			break;
+	}
+	ActualizarParametrosRecibidor(nodo); // actualizamos los datos con los parametros recibidos
+	
+}
+
+function ActualizarParametrosRecibidor(Parametros)
+{
+	var objeto;
+	for (x=0;x<tabla_objetos.length;x++)
+	{
+		objeto=tabla_objetos[x];
+		objeto.ProcesaDatos(Parametros);
+		
+	}
 }
